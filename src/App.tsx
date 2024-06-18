@@ -1,11 +1,12 @@
 import "./App.css";
 
 import { MaterialUiProviders } from "./lib/mui/MaterialUiProviders";
+import { RouterProvider } from "./routes/RouterProvider";
 
 function App() {
   return (
     <MaterialUiProviders>
-      <div>Hello</div>
+      <RouterProvider />
     </MaterialUiProviders>
   );
 }
