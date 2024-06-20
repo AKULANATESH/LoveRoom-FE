@@ -18,14 +18,10 @@ export const defaultQueryOptions: Pick<
 declare module "@tanstack/react-query" {
   interface Register {
     queryMeta: {
-      logErrorMessage?: string;
-      logSuccessMessage?: string;
       userErrorMessage?: string;
       userSuccessMessage?: string;
     };
     mutationMeta: {
-      logErrorMessage?: string;
-      logSuccessMessage?: string;
       userErrorMessage?: string;
       userSuccessMessage?: string;
     };

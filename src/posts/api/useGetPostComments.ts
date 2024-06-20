@@ -1,10 +1,8 @@
-import { type UseQueryResult } from "@tanstack/react-query";
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { z } from "zod";
 
-import { useGetQuery, type UseGetQueryOptions } from "../../api";
+import { type AllowedUseQueryOptions, get } from "../../api";
 import { environmentConfig } from "../../environment";
-
-export const GET_POSTS_PATH = "/posts";
 
 const commentsResponseSchema = z.array(
   z.object({
@@ -23,16 +21,23 @@ interface GetPostCommentsParams {
 
 export function useGetPostComments(
   params: GetPostCommentsParams,
-  options: UseGetQueryOptions<CommentsResponse> = {},
+  options: AllowedUseQueryOptions<CommentsResponse> = {},
 ): UseQueryResult<CommentsResponse> {
   const { postId } = params;
+  const url = `${environmentConfig.BACKEND_API_URL}/posts/${postId}/comments`;
 
-  return useGetQuery({
-    url: `${environmentConfig.BACKEND_API_URL}${GET_POSTS_PATH}/${postId}/comments`,
-    responseSchema: commentsResponseSchema,
+  return useQuery({
+    ...options,
     meta: {
       userErrorMessage: "Error while getting post comments",
     },
-    ...options,
+    queryKey: [url],
+    queryFn: async () => {
+      const response = await get({
+        url,
+        responseSchema: commentsResponseSchema,
+      });
+      return response.data;
+    },
   });
 }

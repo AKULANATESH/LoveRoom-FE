@@ -1,10 +1,8 @@
-import { type UseQueryResult } from "@tanstack/react-query";
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
-import { useGetQuery, type UseGetQueryOptions } from "../../api";
+import { type AllowedUseQueryOptions, get } from "../../api";
 import { environmentConfig } from "../../environment";
 import { type PostResponse, postResponseSchema } from "../types";
-
-export const GET_POSTS_PATH = "/posts";
 
 interface GetPostParams {
   postId: number;
@@ -12,16 +10,23 @@ interface GetPostParams {
 
 export function useGetPost(
   params: GetPostParams,
-  options: UseGetQueryOptions<PostResponse> = {},
+  options: AllowedUseQueryOptions<PostResponse> = {},
 ): UseQueryResult<PostResponse> {
   const { postId } = params;
+  const url = `${environmentConfig.BACKEND_API_URL}/posts/${postId}`;
 
-  return useGetQuery({
-    url: `${environmentConfig.BACKEND_API_URL}${GET_POSTS_PATH}/${postId}`,
-    responseSchema: postResponseSchema,
+  return useQuery({
+    ...options,
     meta: {
       userErrorMessage: "Error while getting post",
     },
-    ...options,
+    queryKey: [url],
+    queryFn: async () => {
+      const response = await get({
+        url,
+        responseSchema: postResponseSchema,
+      });
+      return response.data;
+    },
   });
 }

@@ -1,5 +1,3 @@
+export { remove, get, post, put, patch } from "./api";
 export { queryClient } from "./queryClient";
-export { useDeleteMutation } from "./useDeleteMutation";
-export type { UseDeleteMutationOptions } from "./useDeleteMutation";
-export { useGetQuery } from "./useGetQuery";
-export type { UseGetQueryOptions } from "./useGetQuery";
+export type { AllowedUseQueryOptions, AllowedUseMutationOptions } from "./types";
