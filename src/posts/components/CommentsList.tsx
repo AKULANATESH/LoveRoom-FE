@@ -2,7 +2,6 @@ import {
   Avatar,
   Box,
   CircularProgress,
-  Divider,
   List,
   ListItem,
   ListItemAvatar,
@@ -38,15 +37,12 @@ export function CommentsList(props: CommentsListProps) {
   return (
     <List>
       {comments.map((comment) => (
-        <>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar />
-            </ListItemAvatar>
-            <ListItemText primary={comment.name} secondary={comment.body} />
-          </ListItem>
-          <Divider variant="inset" component="li" sx={{ margin: 0 }} />
-        </>
+        <ListItem key={comment.id}>
+          <ListItemAvatar>
+            <Avatar />
+          </ListItemAvatar>
+          <ListItemText primary={comment.name} secondary={comment.body} />
+        </ListItem>
       ))}
     </List>
   );

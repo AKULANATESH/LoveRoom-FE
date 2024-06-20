@@ -1,4 +1,4 @@
-import { CircularProgress, Divider, List, ListItem, ListItemText, Stack } from "@mui/material";
+import { CircularProgress, List, ListItem, ListItemText, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import { useGetPosts } from "../api/useGetPosts";
@@ -19,16 +19,15 @@ export function Posts() {
   return (
     <List>
       {posts?.map((post) => (
-        <>
-          <ListItem
-            onClick={() => {
-              navigate(`/posts/${post.id}`);
-            }}
-          >
-            <ListItemText primary={post.title} secondary={post.body} />
-          </ListItem>
-          <Divider variant="inset" component="li" sx={{ margin: 0 }} />
-        </>
+        <ListItem
+          key={post.id}
+          sx={{ borderBottom: "1px solid" }}
+          onClick={() => {
+            navigate(`/posts/${post.id}`);
+          }}
+        >
+          <ListItemText primary={post.title} secondary={post.body} />
+        </ListItem>
       ))}
     </List>
   );

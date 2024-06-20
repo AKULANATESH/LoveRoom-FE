@@ -1,13 +1,13 @@
 import { type UseQueryResult } from "@tanstack/react-query";
 
-import { useGetQuery, type UseGetQueryOptions } from "../../api/useGetQuery";
+import { useGetQuery, type UseGetQueryOptions } from "../../api";
 import { environmentConfig } from "../../environment";
 import { type PostResponse, postResponseSchema } from "../types";
 
 export const GET_POSTS_PATH = "/posts";
 
 interface GetPostParams {
-  postId: string;
+  postId: number;
 }
 
 export function useGetPost(

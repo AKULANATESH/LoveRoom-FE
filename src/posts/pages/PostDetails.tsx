@@ -1,17 +1,32 @@
-import { Box, CircularProgress, Divider, List, ListItem, ListItemText, Stack } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { DeleteOutline } from "@mui/icons-material";
+import {
+  Box,
+  CircularProgress,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Stack,
+} from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { isDefined } from "../../utils/isDefined";
+import { useDeletePost } from "../api/useDeletePost";
 import { useGetPost } from "../api/useGetPost";
 import { CommentsList } from "../components/CommentsList";
 
 export function PostDetails() {
-  const { postId } = useParams<{ postId: string }>();
+  const navigate = useNavigate();
+
+  const { postId: postIdString } = useParams<{ postId: string }>();
+  const postId = Number(postIdString);
 
   const { isLoading: isGetPostLoading, data: post } = useGetPost(
-    { postId: postId ?? "" },
-    { enabled: isDefined(postId) },
+    { postId: postId },
+    { enabled: isDefined(postIdString) },
   );
+  const { mutateAsync: deletePost, isPending: isDeletingPost } = useDeletePost({ postId });
 
   if (isGetPostLoading) {
     return (
@@ -28,11 +43,23 @@ export function PostDetails() {
   return (
     <Box sx={{ padding: 4 }}>
       <List>
-        <ListItem>
+        <ListItem
+          secondaryAction={
+            <IconButton
+              onClick={async () => {
+                await deletePost();
+                navigate("/posts");
+              }}
+              disabled={isDeletingPost}
+            >
+              <DeleteOutline />
+            </IconButton>
+          }
+        >
           <ListItemText primary={post.title} secondary={post.body} />
         </ListItem>
         <Divider variant="inset" component="li" sx={{ margin: 0 }} />
-        <CommentsList postId={Number(postId)} />
+        <CommentsList postId={postId} />
       </List>
     </Box>
   );

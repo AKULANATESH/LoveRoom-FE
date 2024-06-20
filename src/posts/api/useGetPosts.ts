@@ -1,7 +1,7 @@
 import { type UseQueryResult } from "@tanstack/react-query";
 import { z } from "zod";
 
-import { useGetQuery, type UseGetQueryOptions } from "../../api/useGetQuery";
+import { useGetQuery, type UseGetQueryOptions } from "../../api";
 import { environmentConfig } from "../../environment";
 import { postResponseSchema } from "../types";
 

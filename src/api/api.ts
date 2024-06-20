@@ -15,7 +15,7 @@ export interface CommonApiParams<ResponseSchema> {
   queryParams?: Record<string, unknown>;
 }
 
-interface ApiParams<RequestSchema, ResponseSchema> extends CommonApiParams<ResponseSchema> {
+export interface ApiParams<RequestSchema, ResponseSchema> extends CommonApiParams<ResponseSchema> {
   data?: RequestSchema;
 }
 
