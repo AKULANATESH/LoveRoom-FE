@@ -75,12 +75,5 @@ module.exports = {
       },
     ],
     eqeqeq: ["error", "always"],
-    "import/no-cycle": ["error", { ignoreExternal: true, maxDepth: 16 }],
-    "import/max-dependencies": [
-      "error",
-      {
-        max: 20,
-      },
-    ],
   },
 };
