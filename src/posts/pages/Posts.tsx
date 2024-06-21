@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useModalState } from "../../lib/modals/useModalState";
 import { useGetPosts } from "../api/useGetPosts";
-import { AddPost } from "../components/AddPost";
+import { AddPostForm } from "../components/AddPostForm";
 
 export function Posts() {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export function Posts() {
       >
         <AddIcon />
       </Fab>
-      <AddPost
+      <AddPostForm
         modalState={addPostModalState}
         onSuccess={() => {
           refetchPosts();
