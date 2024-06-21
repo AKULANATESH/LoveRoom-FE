@@ -1,8 +1,8 @@
+import { type AllowedUseMutationOptions, post } from "@src/api";
+import { environmentConfig } from "@src/environment";
 import { useMutation, type UseMutationResult } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 
-import { type AllowedUseMutationOptions, post } from "../../api";
-import { environmentConfig } from "../../environment";
 import { type PostResponse, postResponseSchema } from "../types";
 
 interface CreatePostRequest {

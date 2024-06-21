@@ -1,8 +1,7 @@
+import { type AllowedUseQueryOptions, get } from "@src/api";
+import { environmentConfig } from "@src/environment";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { z } from "zod";
-
-import { type AllowedUseQueryOptions, get } from "../../api";
-import { environmentConfig } from "../../environment";
 
 const commentsResponseSchema = z.array(
   z.object({

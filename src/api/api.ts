@@ -1,7 +1,6 @@
+import { environmentConfig, isDevelopmentNodeEnvironment } from "@src/environment";
 import axios from "axios";
 import type * as z from "zod";
-
-import { environmentConfig, isDevelopmentNodeEnvironment } from "../environment";
 
 export interface ApiResponse<T> {
   data: T;

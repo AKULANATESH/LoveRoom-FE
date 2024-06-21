@@ -1,7 +1,7 @@
+import { type AllowedUseQueryOptions, get } from "@src/api";
+import { environmentConfig } from "@src/environment";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
-import { type AllowedUseQueryOptions, get } from "../../api";
-import { environmentConfig } from "../../environment";
 import { type PostResponse, postResponseSchema } from "../types";
 
 interface GetPostParams {

@@ -1,9 +1,8 @@
+import { type AllowedUseMutationOptions, remove } from "@src/api";
+import { environmentConfig } from "@src/environment";
 import { useMutation, type UseMutationResult } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 import { z } from "zod";
-
-import { type AllowedUseMutationOptions, remove } from "../../api";
-import { environmentConfig } from "../../environment";
 
 const deletePostResponseSchema = z.object({});
 

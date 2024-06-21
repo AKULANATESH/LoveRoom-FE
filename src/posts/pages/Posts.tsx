@@ -1,8 +1,8 @@
 import { Add as AddIcon } from "@mui/icons-material";
 import { CircularProgress, Fab, List, ListItem, ListItemText, Stack } from "@mui/material";
+import { useModalState } from "@src/lib/modals/useModalState";
 import { useNavigate } from "react-router-dom";
 
-import { useModalState } from "../../lib/modals/useModalState";
 import { useGetPosts } from "../api/useGetPosts";
 import { AddPostForm } from "../components/AddPostForm";
 

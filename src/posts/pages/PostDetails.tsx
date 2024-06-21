@@ -9,9 +9,9 @@ import {
   ListItemText,
   Stack,
 } from "@mui/material";
+import { isDefined } from "@src/utils/isDefined";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { isDefined } from "../../utils/isDefined";
 import { useDeletePost } from "../api/useDeletePost";
 import { useGetPost } from "../api/useGetPost";
 import { CommentsList } from "../components/CommentsList";

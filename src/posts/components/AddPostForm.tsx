@@ -8,10 +8,10 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { type UseModalState } from "@src/lib/modals/useModalState";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { type UseModalState } from "../../lib/modals/useModalState";
 import { useCreatePost } from "../api/useCreatePost";
 
 interface AddPostFormProps {
@@ -28,13 +28,6 @@ type AddPostFormFields = z.infer<typeof addPostFormSchema>;
 export function AddPostForm(props: AddPostFormProps) {
   const { modalState, onSuccess } = props;
 
-  const { isPending: isCreatingPost, mutate: createPost } = useCreatePost({
-    onSuccess: () => {
-      onSuccess();
-      modalState.closeModal();
-    },
-  });
-
   const formMethods = useForm<AddPostFormFields>({
     defaultValues: {
       title: "",
@@ -47,7 +40,16 @@ export function AddPostForm(props: AddPostFormProps) {
     handleSubmit,
     formState: { errors, isSubmitting, isValid: formIsValid },
     register,
+    reset,
   } = formMethods;
+
+  const { isPending: isCreatingPost, mutate: createPost } = useCreatePost({
+    onSuccess: () => {
+      onSuccess();
+      modalState.closeModal();
+      reset();
+    },
+  });
 
   return (
     <Dialog open={modalState.modalIsOpen} onClose={modalState.closeModal}>
