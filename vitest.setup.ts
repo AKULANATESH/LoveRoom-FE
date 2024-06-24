@@ -1,8 +1,11 @@
+import * as matchers from "@testing-library/jest-dom/matchers";
 import { cleanup } from "@testing-library/react";
-import { afterAll, afterEach, beforeAll, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, expect, vi } from "vitest";
 
 import { environmentConfigMock } from "./src/environment/mocks/environmentConfigMock";
 import { mockApiServer } from "./src/mocks/server";
+
+expect.extend(matchers);
 
 beforeAll(async () => {
   mockApiServer.listen({ onUnhandledRequest: "error" });
