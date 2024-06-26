@@ -1,4 +1,4 @@
-import { defaultQueryOptions } from "@src/api/queryClient";
+import { defaultQueryOptions, mutationCache, queryCache } from "@src/api/queryClient";
 import { MaterialUiProviders } from "@src/lib/mui/MaterialUiProviders";
 import { SnackBarProvider } from "@src/lib/notifications/SnackbarProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -12,7 +12,12 @@ interface Props {
 export function MockAppWrapper(props: Props): ReactElement {
   const { children } = props;
 
+  queryCache.clear();
+  mutationCache.clear();
+
   const queryClient = new QueryClient({
+    queryCache,
+    mutationCache,
     defaultOptions: {
       queries: {
         ...defaultQueryOptions,

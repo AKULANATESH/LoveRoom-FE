@@ -28,51 +28,55 @@ declare module "@tanstack/react-query" {
   }
 }
 
+export const queryCache = new QueryCache({
+  onError: (_error, query) => {
+    const { meta: { userErrorMessage } = {} } = query;
+
+    if (userErrorMessage) {
+      enqueueSnackbar({
+        variant: "error",
+        message: userErrorMessage,
+      });
+    }
+  },
+  onSuccess: (_, query) => {
+    const { meta: { userSuccessMessage } = {} } = query;
+
+    if (userSuccessMessage) {
+      enqueueSnackbar({
+        variant: "success",
+        message: userSuccessMessage,
+      });
+    }
+  },
+});
+
+export const mutationCache = new MutationCache({
+  onError(_error, _variables, _context, mutation) {
+    const { meta: { userErrorMessage } = {} } = mutation;
+
+    if (userErrorMessage) {
+      enqueueSnackbar({
+        variant: "error",
+        message: userErrorMessage,
+      });
+    }
+  },
+  onSuccess(_data, _variables, _context, mutation) {
+    const { meta: { userSuccessMessage } = {} } = mutation;
+
+    if (userSuccessMessage) {
+      enqueueSnackbar({
+        variant: "success",
+        message: userSuccessMessage,
+      });
+    }
+  },
+});
+
 export const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: (_error, query) => {
-      const { meta: { userErrorMessage } = {} } = query;
-
-      if (userErrorMessage) {
-        enqueueSnackbar({
-          variant: "error",
-          message: userErrorMessage,
-        });
-      }
-    },
-    onSuccess: (_, query) => {
-      const { meta: { userSuccessMessage } = {} } = query;
-
-      if (userSuccessMessage) {
-        enqueueSnackbar({
-          variant: "success",
-          message: userSuccessMessage,
-        });
-      }
-    },
-  }),
-  mutationCache: new MutationCache({
-    onError(_error, _variables, _context, mutation) {
-      const { meta: { userErrorMessage } = {} } = mutation;
-
-      if (userErrorMessage) {
-        enqueueSnackbar({
-          variant: "error",
-          message: userErrorMessage,
-        });
-      }
-    },
-    onSuccess(_data, _variables, _context, mutation) {
-      const { meta: { userSuccessMessage } = {} } = mutation;
-
-      if (userSuccessMessage) {
-        enqueueSnackbar({
-          variant: "success",
-          message: userSuccessMessage,
-        });
-      }
-    },
-  }),
+  queryCache,
+  mutationCache,
   defaultOptions: {
     queries: defaultQueryOptions,
   },

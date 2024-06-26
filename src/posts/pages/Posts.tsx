@@ -37,6 +37,7 @@ export function Posts() {
       </List>
       <Fab
         color="primary"
+        aria-label="Add Post"
         sx={{
           position: "fixed",
           bottom: (theme) => theme.spacing(3),
