@@ -1,5 +1,5 @@
 import { Add as AddIcon } from "@mui/icons-material";
-import { CircularProgress, Fab, List, ListItem, ListItemText, Stack } from "@mui/material";
+import { Box, CircularProgress, Fab, List, ListItem, ListItemText, Stack } from "@mui/material";
 import { useModalState } from "@src/lib/modals/useModalState";
 import { useNavigate } from "react-router-dom";
 
@@ -14,14 +14,19 @@ export function Posts() {
 
   if (isGetPostsLoading) {
     return (
-      <Stack sx={{ height: "100%", alignItems: "center" }}>
+      <Stack sx={{ height: "100%", justifyContent: "center", alignItems: "center" }}>
         <CircularProgress />
       </Stack>
     );
   }
 
   return (
-    <>
+    <Box
+      sx={{
+        overflow: "auto",
+        height: "100%",
+      }}
+    >
       <List>
         {posts?.map((post) => (
           <ListItem
@@ -55,6 +60,6 @@ export function Posts() {
           refetchPosts();
         }}
       />
-    </>
+    </Box>
   );
 }

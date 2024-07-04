@@ -24,7 +24,7 @@ export function CommentsList(props: CommentsListProps) {
 
   if (isGetPostCommentsLoading) {
     return (
-      <Stack sx={{ height: "100%", alignItems: "center" }}>
+      <Stack sx={{ height: "100%", justifyContent: "center", alignItems: "center" }}>
         <CircularProgress />
       </Stack>
     );
@@ -35,7 +35,7 @@ export function CommentsList(props: CommentsListProps) {
   }
 
   return (
-    <List>
+    <List sx={{ overflow: "auto", flexGrow: 1 }}>
       {comments.map((comment) => (
         <ListItem key={comment.id}>
           <ListItemAvatar>

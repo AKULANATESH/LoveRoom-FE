@@ -1,3 +1,4 @@
+import { NotFoundPage } from "@src/lib/layouts";
 import { type ReactElement } from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -9,6 +10,7 @@ export function PostRoutes(): ReactElement {
     <Routes>
       <Route index element={<Posts />} />
       <Route path="/:postId" element={<PostDetails />} />
+      <Route path="/*" element={<NotFoundPage />} />
     </Routes>
   );
 }

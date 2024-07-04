@@ -2,7 +2,6 @@ import { DeleteOutline } from "@mui/icons-material";
 import {
   Box,
   CircularProgress,
-  Divider,
   IconButton,
   List,
   ListItem,
@@ -30,7 +29,7 @@ export function PostDetails() {
 
   if (isGetPostLoading) {
     return (
-      <Stack sx={{ height: "100%", alignItems: "center" }}>
+      <Stack sx={{ height: "100%", justifyContent: "center", alignItems: "center" }}>
         <CircularProgress />
       </Stack>
     );
@@ -41,8 +40,14 @@ export function PostDetails() {
   }
 
   return (
-    <Box sx={{ padding: 4 }}>
-      <List>
+    <Box
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <List sx={{ borderBottom: "1px solid" }}>
         <ListItem
           secondaryAction={
             <IconButton
@@ -58,9 +63,8 @@ export function PostDetails() {
         >
           <ListItemText primary={post.title} secondary={post.body} />
         </ListItem>
-        <Divider variant="inset" component="li" sx={{ margin: 0 }} />
-        <CommentsList postId={postId} />
       </List>
+      <CommentsList postId={postId} />
     </Box>
   );
 }

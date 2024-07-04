@@ -1,13 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { TextInputField } from "@src/lib/formFields/TextInputField";
 import { type UseModalState } from "@src/lib/modals/useModalState";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -38,8 +31,7 @@ export function AddPostForm(props: AddPostFormProps) {
   });
   const {
     handleSubmit,
-    formState: { errors, isSubmitting, isValid: formIsValid },
-    register,
+    formState: { isSubmitting, isValid: formIsValid },
     reset,
   } = formMethods;
 
@@ -66,25 +58,21 @@ export function AddPostForm(props: AddPostFormProps) {
         >
           <DialogTitle>Add Post</DialogTitle>
           <DialogContent sx={{ "&.MuiDialogContent-root": { paddingTop: 2 } }}>
-            <TextField
+            <TextInputField
               fullWidth
               sx={{ marginBottom: 2 }}
               label="Title for post"
               placeholder="Post Title"
-              {...register("title")}
-              error={Boolean(errors.title)}
-              helperText={errors.title?.message}
+              name={"title"}
             />
-            <TextField
+            <TextInputField
               fullWidth
               multiline
               sx={{ marginBottom: 2 }}
               label="Body for post"
               placeholder="Minimum 10 characters"
               rows={4}
-              {...register("body")}
-              error={Boolean(errors.body)}
-              helperText={errors.body?.message}
+              name={"body"}
             />
           </DialogContent>
           <DialogActions>

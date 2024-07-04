@@ -18,9 +18,6 @@ export function getTheme(paletteMode: Theme["palette"]["mode"]): Theme {
         xl: 1400,
       },
     },
-    zIndex: {
-      appBar: 2000,
-    },
     typography: {
       allVariants: {
         color: textColor,
