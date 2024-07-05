@@ -33,6 +33,7 @@ export function MenuDrawer() {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           marginLeft: { sm: `${drawerWidth}px` },
+          display: { sm: "none" },
           transition: (theme) =>
             theme.transitions.create(["width", "margin"], {
               easing: theme.transitions.easing.sharp,
@@ -43,7 +44,7 @@ export function MenuDrawer() {
         <Toolbar>
           <IconButton
             edge="start"
-            sx={{ marginRight: 2, display: { sm: "none" } }}
+            sx={{ marginRight: 2 }}
             color="secondary"
             onClick={() => {
               setDrawerIsOpen(true);
@@ -71,11 +72,10 @@ export function MenuDrawer() {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
-              border: "1px solid",
+              borderRight: "1px solid",
             },
           }}
         >
-          <Toolbar sx={{ borderBottom: "1px solid" }} />
           <Box
             sx={{
               padding: 1,

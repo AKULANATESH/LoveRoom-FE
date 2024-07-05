@@ -14,18 +14,17 @@ export function PageWithMenu() {
           flexDirection: "column",
           width: "100%",
           height: "100%",
-          padding: 1,
+          paddingX: { sm: 4, xs: 2 },
           overflow: "hidden",
         }}
         component="main"
       >
-        <Toolbar />
+        <Toolbar sx={{ display: { sm: "none" } }} />
         <Box
           sx={{
-            padding: 1,
-            border: "1px solid",
             overflow: "hidden",
             flexGrow: 1,
+            paddingY: { sm: 4, xs: 2 },
           }}
         >
           <Outlet></Outlet>
