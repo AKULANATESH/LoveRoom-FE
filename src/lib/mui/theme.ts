@@ -1,9 +1,10 @@
 import { createTheme, type Theme } from "@mui/material";
-import { common, red } from "@mui/material/colors";
+import { common } from "@mui/material/colors";
 
 export function getTheme(paletteMode: Theme["palette"]["mode"]): Theme {
   const modeIsLight = paletteMode === "light";
   const textColor = modeIsLight ? common.black : common.white;
+  const primaryColor = "#2C9497";
 
   return createTheme({
     shape: {
@@ -22,20 +23,22 @@ export function getTheme(paletteMode: Theme["palette"]["mode"]): Theme {
       allVariants: {
         color: textColor,
         fontWeight: 400,
-        lineHeight: "inherit",
       },
       h1: {
-        fontSize: "1.75rem",
+        fontSize: "28px",
+        lineHeight: "36px",
       },
       h2: {
-        fontSize: "1.5rem",
+        fontSize: "24px",
+        lineHeight: "32px",
       },
       h3: {
-        fontSize: "1.25rem",
-        lineHeight: "1.75rem",
+        fontSize: "20px",
+        lineHeight: "28px",
       },
       h4: {
-        fontSize: "1rem",
+        fontSize: "16px",
+        lineHeight: "24px",
       },
       body1: {
         fontSize: "1rem",
@@ -49,33 +52,40 @@ export function getTheme(paletteMode: Theme["palette"]["mode"]): Theme {
     },
     palette: {
       primary: {
-        main: common.black,
+        main: primaryColor,
       },
       secondary: {
         main: common.white,
       },
       error: {
-        main: red[100],
-        light: "#EF5350",
-        contrastText: "#FFF1F0",
+        main: "#D92D20",
       },
       info: {
         main: "#1890FF",
-        light: "#ECF4FA",
-        contrastText: "#E5F5FD",
       },
       warning: {
-        main: "#E7A600",
-        light: "#FAECEC",
+        main: "#F79009",
       },
       success: {
-        main: "#2E7D32",
-        light: "#4CAF50",
-        contrastText: "#EDF7ED",
+        main: "#079455",
       },
       text: {
         primary: textColor,
         secondary: textColor,
+      },
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: "unset",
+            borderRadius: "8px",
+          },
+        },
+        defaultProps: {
+          disableRipple: true,
+          draggable: false,
+        },
       },
     },
   });
