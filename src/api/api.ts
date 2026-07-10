@@ -1,3 +1,4 @@
+import { getAccessToken } from "@src/auth/storage";
 import { environmentConfig, isDevelopmentNodeEnvironment } from "@src/environment";
 import axios from "axios";
 import type * as z from "zod";
@@ -25,13 +26,17 @@ const apiClient = axios.create({
   },
 });
 
+apiClient.interceptors.request.use((config) => {
+  const token = getAccessToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 apiClient.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    if (error instanceof Error) {
-      throw error;
-    }
-  },
+  (error: unknown) => Promise.reject(error),
 );
 
 export async function get<ResponseSchema>({

@@ -1,7 +1,12 @@
 import {
-  ListAlt as ListAltIcon,
+  ChatBubble as ChatBubbleIcon,
+  Event as EventIcon,
+  Favorite as FavoriteIcon,
   Logout as LogoutIcon,
   Menu as MenuIcon,
+  MyLocation as MyLocationIcon,
+  Notifications as NotificationsIcon,
+  Timeline as TimelineIcon,
 } from "@mui/icons-material";
 import {
   AppBar,
@@ -16,15 +21,30 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { useAuthContext } from "@src/auth/useAuth";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useBreakpoint } from "../mui/useBreakpoint";
+import { PartnerActivitySidebar } from "@src/together/components/PartnerActivitySidebar";
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 export function MenuDrawer() {
   const isSmallScreen = useBreakpoint();
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+  const { logout, authState } = useAuthContext();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navigationItems = [
+    { label: "Relationship Home", path: "/together", icon: FavoriteIcon },
+    { label: "Chat", path: "/together/chat", icon: ChatBubbleIcon },
+    { label: "Milestones", path: "/together/home", icon: TimelineIcon },
+    { label: "Notifications", path: "/together/home", icon: NotificationsIcon },
+    { label: "Calendar", path: "/together/calendar", icon: EventIcon },
+    { label: "Location", path: "/together/location", icon: MyLocationIcon },
+  ];
 
   return (
     <>
@@ -52,8 +72,8 @@ export function MenuDrawer() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" color="secondary">
-            React Template App
+          <Typography variant="h6" color="inherit" fontWeight={800}>
+            Together
           </Typography>
         </Toolbar>
       </AppBar>
@@ -72,7 +92,8 @@ export function MenuDrawer() {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
-              borderRight: "1px solid",
+              borderRight: "1px solid rgba(233, 30, 99, 0.12)",
+              bgcolor: "background.paper",
             },
           }}
         >
@@ -86,17 +107,55 @@ export function MenuDrawer() {
             }}
           >
             <List>
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <ListAltIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Posts"} />
-                </ListItemButton>
+              <ListItem sx={{ mb: 1, flexDirection: "column", alignItems: "flex-start" }}>
+                <Typography variant="h3" color="primary">
+                  Together
+                </Typography>
+                {authState?.user.name ? (
+                  <Typography variant="caption" color="text.secondary">
+                    Hi, {authState.user.name}
+                  </Typography>
+                ) : null}
               </ListItem>
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                const isSelected =
+                  item.path === "/together"
+                    ? location.pathname === "/together" || location.pathname === "/together/"
+                    : location.pathname.startsWith(item.path);
+
+                return (
+                  <ListItem key={item.label} disablePadding sx={{ mb: 0.5 }}>
+                    <ListItemButton
+                      selected={isSelected}
+                      onClick={() => {
+                        navigate(item.path);
+                        setDrawerIsOpen(false);
+                      }}
+                      sx={{ borderRadius: 3 }}
+                    >
+                      <ListItemIcon>
+                        <Icon color={isSelected ? "primary" : "inherit"} />
+                      </ListItemIcon>
+                      <ListItemText primary={item.label} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
             </List>
-            <ListItem disablePadding sx={{ borderTop: "1px solid" }}>
-              <ListItemButton>
+
+            <Box sx={{ flex: 1, overflowY: "auto", mt: 1 }}>
+              <PartnerActivitySidebar />
+            </Box>
+
+            <ListItem disablePadding sx={{ borderTop: "1px solid rgba(233, 30, 99, 0.12)", pt: 1 }}>
+              <ListItemButton
+                onClick={() => {
+                  logout();
+                  navigate("/login");
+                }}
+                sx={{ borderRadius: 3 }}
+              >
                 <ListItemIcon>
                   <LogoutIcon />
                 </ListItemIcon>

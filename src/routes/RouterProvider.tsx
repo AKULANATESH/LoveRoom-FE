@@ -1,14 +1,12 @@
 import { type ReactElement } from "react";
 import { BrowserRouter } from "react-router-dom";
 
-import { PrivateRoutes } from "./PrivateRoutes";
-import { PublicRoutes } from "./PublicRoutes";
+import { AppRoutes } from "./AppRoutes";
 
 export function RouterProvider(): ReactElement {
   return (
     <BrowserRouter>
-      <PublicRoutes />
-      <PrivateRoutes />
+      <AppRoutes />
     </BrowserRouter>
   );
 }

@@ -1,14 +1,13 @@
-import { createTheme, type Theme } from "@mui/material";
-import { common } from "@mui/material/colors";
+import { alpha, createTheme, type Theme } from "@mui/material";
 
 export function getTheme(paletteMode: Theme["palette"]["mode"]): Theme {
-  const modeIsLight = paletteMode === "light";
-  const textColor = modeIsLight ? common.black : common.white;
-  const primaryColor = "#2C9497";
+  const textPrimary = "#1F2937";
+  const textSecondary = "#6B7280";
+  const primaryColor = "#E91E63";
 
   return createTheme({
     shape: {
-      borderRadius: 8,
+      borderRadius: 18,
     },
     breakpoints: {
       values: {
@@ -20,25 +19,32 @@ export function getTheme(paletteMode: Theme["palette"]["mode"]): Theme {
       },
     },
     typography: {
+      fontFamily: '"Inter", "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
       allVariants: {
-        color: textColor,
+        color: textPrimary,
         fontWeight: 400,
       },
       h1: {
-        fontSize: "28px",
-        lineHeight: "36px",
+        fontSize: "34px",
+        lineHeight: "42px",
+        fontWeight: 800,
+        letterSpacing: "-0.04em",
       },
       h2: {
-        fontSize: "24px",
-        lineHeight: "32px",
+        fontSize: "28px",
+        lineHeight: "36px",
+        fontWeight: 800,
+        letterSpacing: "-0.03em",
       },
       h3: {
-        fontSize: "20px",
-        lineHeight: "28px",
+        fontSize: "22px",
+        lineHeight: "30px",
+        fontWeight: 700,
       },
       h4: {
-        fontSize: "16px",
-        lineHeight: "24px",
+        fontSize: "18px",
+        lineHeight: "26px",
+        fontWeight: 700,
       },
       body1: {
         fontSize: "1rem",
@@ -51,40 +57,75 @@ export function getTheme(paletteMode: Theme["palette"]["mode"]): Theme {
       },
     },
     palette: {
+      mode: paletteMode,
+      background: {
+        default: "#FFF5F8",
+        paper: "#FFFFFF",
+      },
       primary: {
         main: primaryColor,
       },
       secondary: {
-        main: common.white,
+        main: "#FF4081",
       },
       error: {
         main: "#D92D20",
       },
       info: {
-        main: "#1890FF",
+        main: "#E91E63",
       },
       warning: {
         main: "#F79009",
       },
       success: {
-        main: "#079455",
+        main: "#4CAF50",
       },
       text: {
-        primary: textColor,
-        secondary: textColor,
+        primary: textPrimary,
+        secondary: textSecondary,
       },
     },
     components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            background:
+              "radial-gradient(circle at top left, rgba(255, 205, 210, 0.55), transparent 32%), #FFF5F8",
+          },
+        },
+      },
       MuiButton: {
         styleOverrides: {
           root: {
             textTransform: "unset",
-            borderRadius: "8px",
+            borderRadius: "999px",
+            fontWeight: 700,
+            boxShadow: "none",
+          },
+          containedPrimary: {
+            boxShadow: `0 14px 32px ${alpha(primaryColor, 0.28)}`,
+            "&:hover": {
+              boxShadow: `0 16px 36px ${alpha(primaryColor, 0.34)}`,
+            },
           },
         },
         defaultProps: {
-          disableRipple: true,
           draggable: false,
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            borderRadius: 28,
+            boxShadow: "0 20px 60px rgba(233, 30, 99, 0.09)",
+          },
+        },
+      },
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            backgroundImage: "none",
+          },
         },
       },
     },

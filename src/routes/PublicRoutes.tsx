@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 export function PublicRoutes(): ReactElement {
   return (
     <Routes>
-      <Route path="/login/*" element={<LoginRoutes />} />
+      <Route path="/*" element={<LoginRoutes />} />
     </Routes>
   );
 }

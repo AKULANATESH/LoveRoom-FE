@@ -1,21 +1,25 @@
 import { useAuthContext } from "@src/auth/useAuth";
 import { NotFoundPage, PageWithMenu } from "@src/lib/layouts";
-import { PostRoutes } from "@src/posts/Routes";
+import { TogetherRoutes } from "@src/together/Routes";
 import { type ReactElement } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 export function PrivateRoutes(): ReactElement {
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated, hasPartner } = useAuthContext();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
+  if (!hasPartner) {
+    return <Navigate to="/invite" />;
+  }
+
   return (
     <Routes>
       <Route path="/" element={<PageWithMenu />}>
-        <Route index element={<Navigate to="/posts" />} />
-        <Route path="/posts/*" element={<PostRoutes />} />
+        <Route index element={<Navigate to="/together" />} />
+        <Route path="/together/*" element={<TogetherRoutes />} />
         <Route path="/*" element={<NotFoundPage />} />
       </Route>
     </Routes>
