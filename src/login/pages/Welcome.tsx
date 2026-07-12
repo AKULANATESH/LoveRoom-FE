@@ -19,11 +19,11 @@ export function Welcome(): ReactElement {
   return (
     <AuthLayout
       title="Welcome to Together"
-      subtitle="One of you creates a space. The other joins with an invite code."
+      subtitle="Create a shared space with both emails. Your partner gets a link to set their username and password."
     >
       <Stack spacing={1.5}>
         <Button component={RouterLink} to="/register" variant="contained" size="large">
-          Create account
+          Create shared account
         </Button>
         <Button component={RouterLink} to="/login" variant="outlined" size="large">
           Sign in

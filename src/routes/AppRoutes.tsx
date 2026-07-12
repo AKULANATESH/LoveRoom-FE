@@ -4,6 +4,7 @@ import { InvitePartner } from "@src/login/pages/InvitePartner";
 import { JoinWithCode } from "@src/login/pages/JoinWithCode";
 import { Login } from "@src/login/pages/Login";
 import { Register } from "@src/login/pages/Register";
+import { ResetPassword } from "@src/login/pages/ResetPassword";
 import { Welcome } from "@src/login/pages/Welcome";
 import { TogetherRoutes } from "@src/together/Routes";
 import { type ReactElement } from "react";
@@ -29,6 +30,7 @@ export function AppRoutes(): ReactElement {
       <Route index element={<Welcome />} />
       <Route path="register" element={<Register />} />
       <Route path="login" element={<Login />} />
+      <Route path="reset-password" element={<ResetPassword />} />
       <Route path="join" element={<JoinWithCode />} />
       <Route path="join/:code" element={<JoinWithCode />} />
       <Route path="invite" element={<InvitePartner />} />

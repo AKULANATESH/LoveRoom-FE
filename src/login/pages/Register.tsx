@@ -1,19 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, Button, Link, Stack } from "@mui/material";
-import { useAcceptInvitation, usePreviewInvitation } from "@src/auth/api/useInvitations";
-import { useRegister } from "@src/auth/api/useRegister";
+import { getApiErrorMessage } from "@src/api/getApiErrorMessage";
+import { useRegisterCouple } from "@src/auth/api/useRegisterCouple";
 import { useAuthContext } from "@src/auth/useAuth";
 import { TextInputField } from "@src/lib/formFields/TextInputField";
 import { useToast } from "@src/lib/notifications/useToast";
 import type { ReactElement } from "react";
-import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Link as RouterLink, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { AuthLayout } from "../components/AuthLayout";
 
-const registerSchema = z
+const registerCoupleSchema = z
   .object({
     name: z.string().min(2, "Enter your name"),
     email: z.string().email("Enter a valid email"),
@@ -22,76 +21,54 @@ const registerSchema = z
       .min(3, "Username must be at least 3 characters")
       .max(30)
       .regex(/^[a-zA-Z0-9_]+$/, "Use letters, numbers, and underscores only"),
+    partnerEmail: z.string().email("Enter your partner’s email"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
+  })
+  .refine((data) => data.email.toLowerCase() !== data.partnerEmail.toLowerCase(), {
+    message: "Partner email must be different from yours",
+    path: ["partnerEmail"],
   });
 
-type RegisterForm = z.infer<typeof registerSchema>;
+type RegisterCoupleForm = z.infer<typeof registerCoupleSchema>;
 
 export function Register(): ReactElement {
   const navigate = useNavigate();
-  const location = useLocation();
   const toast = useToast();
-  const inviteCode = (location.state as { inviteCode?: string } | null)?.inviteCode;
-  const invitePreview = usePreviewInvitation(inviteCode);
   const { isAuthenticated, hasPartner, setAuthFromResponse } = useAuthContext();
-  const form = useForm<RegisterForm>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<RegisterCoupleForm>({
+    resolver: zodResolver(registerCoupleSchema),
     defaultValues: {
       name: "",
-      email: invitePreview.data?.inviteeEmail ?? "",
-      username: invitePreview.data?.inviteeUsername ?? "",
+      email: "",
+      username: "",
+      partnerEmail: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  useEffect(() => {
-    if (invitePreview.data?.inviteeEmail) {
-      form.setValue("email", invitePreview.data.inviteeEmail);
-    }
-    if (invitePreview.data?.inviteeUsername) {
-      form.setValue("username", invitePreview.data.inviteeUsername);
-    }
-  }, [form, invitePreview.data]);
-
-  const acceptInvitation = useAcceptInvitation({
+  const registerCouple = useRegisterCouple({
     onSuccess: (response) => {
       setAuthFromResponse(response);
-      toast.showSuccessToast("You are connected with your partner.");
+      toast.showSuccessToast(
+        "Your shared space is ready. We emailed your partner to set their username and password.",
+      );
       navigate("/together");
     },
-    onError: () => {
-      toast.showErrorToast("Account created, but invite acceptance failed. Try again from Join.");
-      navigate("/invite");
-    },
-  });
-
-  const register = useRegister({
-    onSuccess: (response) => {
-      setAuthFromResponse(response);
-      toast.showSuccessToast("Your account is ready.");
-      if (inviteCode) {
-        acceptInvitation.mutate({ code: inviteCode });
-        return;
-      }
-      navigate(response.hasPartner ? "/together" : "/invite");
-    },
-    onError: () => {
-      toast.showErrorToast("Could not create your account. Check your details and try again.");
+    onError: (error) => {
+      toast.showErrorToast(
+        getApiErrorMessage(error, "Could not create your accounts. Check details and try again."),
+      );
     },
   });
 
   if (isAuthenticated && hasPartner) {
     return <Navigate to="/together" />;
-  }
-
-  if (isAuthenticated && !hasPartner && inviteCode) {
-    return <Navigate to={`/join/${inviteCode}`} />;
   }
 
   if (isAuthenticated) {
@@ -100,47 +77,47 @@ export function Register(): ReactElement {
 
   return (
     <AuthLayout
-      title="Create your account"
-      subtitle={
-        inviteCode
-          ? "Create your account to accept your partner’s invite."
-          : "Start your shared space, then invite your partner by email or username."
-      }
+      title="Create your shared space"
+      subtitle="Add both emails and one password. Your partner gets an email to choose their username and set a new password."
     >
       <FormProvider {...form}>
         <Stack
           component="form"
           spacing={2}
           onSubmit={form.handleSubmit((values) => {
-            register.mutate({
+            registerCouple.mutate({
               name: values.name,
               email: values.email,
               username: values.username,
+              partnerEmail: values.partnerEmail,
               password: values.password,
             });
           })}
         >
-          {invitePreview.data ? (
-            <Alert severity="info">
-              Joining invite from <strong>{invitePreview.data.inviterName}</strong>. Use the email
-              and username shown on the invite.
-            </Alert>
-          ) : null}
-          {register.isError ? (
+          {registerCouple.isError ? (
             <Alert severity="error">
-              Registration failed. Email or username may already exist.
+              {getApiErrorMessage(
+                registerCouple.error,
+                "Registration failed. Email or username may already exist.",
+              )}
             </Alert>
           ) : null}
           <TextInputField name="name" label="Your name" autoComplete="name" />
-          <TextInputField name="email" label="Email" type="email" autoComplete="email" />
+          <TextInputField name="email" label="Your email" type="email" autoComplete="email" />
           <TextInputField
             name="username"
-            label="Username"
-            helperText="Your partner can use this to find your invite"
+            label="Your username"
+            helperText="Only you set a username here"
+          />
+          <TextInputField
+            name="partnerEmail"
+            label="Partner email"
+            type="email"
+            helperText="We’ll email them a link to set username and password"
           />
           <TextInputField
             name="password"
-            label="Password"
+            label="Shared password"
             type="password"
             autoComplete="new-password"
           />
@@ -150,15 +127,15 @@ export function Register(): ReactElement {
             type="password"
             autoComplete="new-password"
           />
-          <Button type="submit" variant="contained" size="large" disabled={register.isPending}>
-            {register.isPending ? "Creating account..." : "Create account"}
-          </Button>
-          <Link
-            component={RouterLink}
-            to="/login"
-            state={{ inviteCode }}
-            underline="hover"
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            disabled={registerCouple.isPending}
           >
+            {registerCouple.isPending ? "Creating accounts..." : "Create accounts"}
+          </Button>
+          <Link component={RouterLink} to="/login" underline="hover">
             Already have an account? Sign in
           </Link>
         </Stack>

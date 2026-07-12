@@ -6,6 +6,7 @@ import { InvitePartner } from "./pages/InvitePartner";
 import { JoinWithCode } from "./pages/JoinWithCode";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
+import { ResetPassword } from "./pages/ResetPassword";
 import { Welcome } from "./pages/Welcome";
 
 export function LoginRoutes(): ReactElement {
@@ -14,6 +15,7 @@ export function LoginRoutes(): ReactElement {
       <Route index element={<Welcome />} />
       <Route path="register" element={<Register />} />
       <Route path="login" element={<Login />} />
+      <Route path="reset-password" element={<ResetPassword />} />
       <Route path="join" element={<JoinWithCode />} />
       <Route path="join/:code" element={<JoinWithCode />} />
       <Route path="invite" element={<InvitePartner />} />
