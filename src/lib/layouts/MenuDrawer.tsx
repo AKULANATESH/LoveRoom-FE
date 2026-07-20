@@ -6,11 +6,13 @@ import {
   Menu as MenuIcon,
   MyLocation as MyLocationIcon,
   Notifications as NotificationsIcon,
+  PersonAdd as PersonAddIcon,
   Timeline as TimelineIcon,
 } from "@mui/icons-material";
 import {
   AppBar,
   Box,
+  Button,
   Drawer,
   IconButton,
   List,
@@ -22,6 +24,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuthContext } from "@src/auth/useAuth";
+import { useRelationshipHome } from "@src/together/api/useRelationshipHome";
+import { soloModeCopy } from "@src/together/soloModeCopy";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -33,9 +37,11 @@ const drawerWidth = 300;
 export function MenuDrawer() {
   const isSmallScreen = useBreakpoint();
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
-  const { logout, authState } = useAuthContext();
+  const { logout, authState, hasPartner } = useAuthContext();
+  const relationshipHome = useRelationshipHome({ enabled: hasPartner });
   const navigate = useNavigate();
   const location = useLocation();
+  const partnerName = relationshipHome.data?.partner.name;
 
   const navigationItems = [
     { label: "Relationship Home", path: "/together", icon: FavoriteIcon },
@@ -115,6 +121,29 @@ export function MenuDrawer() {
                   <Typography variant="caption" color="text.secondary">
                     Hi, {authState.user.name}
                   </Typography>
+                ) : null}
+                {hasPartner && partnerName ? (
+                  <Typography variant="caption" color="primary.main" fontWeight={700}>
+                    With {partnerName}
+                  </Typography>
+                ) : null}
+                {!hasPartner ? (
+                  <Box sx={{ mt: 1, width: "100%" }}>
+                    <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1 }}>
+                      {soloModeCopy.menu.description}
+                    </Typography>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      startIcon={<PersonAddIcon />}
+                      onClick={() => {
+                        navigate("/invite");
+                        setDrawerIsOpen(false);
+                      }}
+                    >
+                      Invite partner
+                    </Button>
+                  </Box>
                 ) : null}
               </ListItem>
               {navigationItems.map((item) => {

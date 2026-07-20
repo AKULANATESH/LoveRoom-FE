@@ -1,4 +1,5 @@
 import { Box, Container, Paper, Stack, Tab, Tabs, Typography } from "@mui/material";
+import { useAuthContext } from "@src/auth/useAuth";
 import { useToast } from "@src/lib/notifications/useToast";
 import type { ReactElement, SyntheticEvent } from "react";
 import { useState } from "react";
@@ -7,11 +8,13 @@ import { useCalendarEvents } from "../api/useCalendarEvents";
 import { useCreateCalendarEvent } from "../api/useCreateCalendarEvent";
 import { AddCalendarEventForm } from "../components/AddCalendarEventForm";
 import { CalendarEventList } from "../components/CalendarEventList";
+import { SoloEmptyState } from "../components/SoloEmptyState";
 
 export function SharedCalendarPage(): ReactElement {
   const toast = useToast();
+  const { hasPartner } = useAuthContext();
   const [tab, setTab] = useState<"view" | "add">("view");
-  const calendarEvents = useCalendarEvents();
+  const calendarEvents = useCalendarEvents({ enabled: hasPartner });
   const createCalendarEvent = useCreateCalendarEvent({
     onSuccess: () => {
       toast.showSuccessToast("Added to your shared calendar.");
@@ -22,6 +25,22 @@ export function SharedCalendarPage(): ReactElement {
   const handleTabChange = (_event: SyntheticEvent, value: "view" | "add") => {
     setTab(value);
   };
+
+  if (!hasPartner) {
+    return (
+      <Container maxWidth="md" disableGutters sx={{ pb: 6 }}>
+        <Stack spacing={3}>
+          <Box>
+            <Typography variant="overline" color="text.secondary">
+              Together
+            </Typography>
+            <Typography variant="h1">Shared calendar</Typography>
+          </Box>
+          <SoloEmptyState page="calendar" />
+        </Stack>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md" disableGutters sx={{ pb: 6 }}>

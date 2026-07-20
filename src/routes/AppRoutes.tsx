@@ -11,14 +11,10 @@ import { type ReactElement } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 function ProtectedShell(): ReactElement {
-  const { isAuthenticated, hasPartner } = useAuthContext();
+  const { isAuthenticated } = useAuthContext();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
-  }
-
-  if (!hasPartner) {
-    return <Navigate to="/invite" replace />;
   }
 
   return <PageWithMenu />;

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert, Button, Link, Stack, Typography } from "@mui/material";
+import { Alert, Button, Link, Stack } from "@mui/material";
 import { getApiErrorMessage } from "@src/api/getApiErrorMessage";
 import { useAcceptInvitation, usePreviewInvitation } from "@src/auth/api/useInvitations";
 import { useLogin } from "@src/auth/api/useLogin";
@@ -31,7 +31,7 @@ export function Login(): ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
   const toast = useToast();
-  const { isAuthenticated, hasPartner, authState, setAuthFromResponse, logout } = useAuthContext();
+  const { isAuthenticated, setAuthFromResponse, logout } = useAuthContext();
   const locationState = (location.state as LoginLocationState | null) ?? {};
   const inviteCode = locationState.inviteCode;
   const inviteEmailFromState = locationState.inviteEmail;
@@ -80,38 +80,15 @@ export function Login(): ReactElement {
         acceptInvitation.mutate({ code: inviteCode });
         return;
       }
-      if (response.hasPartner) {
-        navigate("/together");
-        return;
-      }
-      navigate("/invite");
+      navigate("/together");
     },
     onError: () => {
       toast.showErrorToast("Invalid email or password.");
     },
   });
 
-  if (isAuthenticated && hasPartner) {
-    return <Navigate to="/together" />;
-  }
-
   if (isAuthenticated && !inviteCode) {
-    return (
-      <AuthLayout
-        title="You are already signed in"
-        subtitle="Continue inviting your partner, or sign out to use a different account."
-      >
-        <Stack spacing={2}>
-          <Typography color="text.secondary">
-            Signed in as <strong>{authState?.user.name}</strong> ({authState?.user.email})
-          </Typography>
-          <Button variant="contained" size="large" onClick={() => navigate("/invite")}>
-            Continue to invite
-          </Button>
-          <AuthFooterLinks showSignOut showHomeLink showJoinLink />
-        </Stack>
-      </AuthLayout>
-    );
+    return <Navigate to="/together" />;
   }
 
   return (

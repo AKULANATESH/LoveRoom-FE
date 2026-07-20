@@ -5,14 +5,10 @@ import { type ReactElement } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 export function PrivateRoutes(): ReactElement {
-  const { isAuthenticated, hasPartner } = useAuthContext();
+  const { isAuthenticated } = useAuthContext();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
-  }
-
-  if (!hasPartner) {
-    return <Navigate to="/invite" />;
   }
 
   return (

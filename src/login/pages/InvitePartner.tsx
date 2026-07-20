@@ -47,7 +47,11 @@ export function InvitePartner(): ReactElement {
     onSuccess: (response) => {
       setInviteCode(response.code);
       updateAuthState({ pendingInviteCode: response.code });
-      toast.showSuccessToast("Invite created. Share the code with your partner.");
+      toast.showSuccessToast(
+        tab === "email"
+          ? "Invite created. We emailed your partner with the code."
+          : "Invite created. Share the code with your partner.",
+      );
     },
     onError: () => {
       toast.showErrorToast("Could not create invite. Please try again.");
@@ -65,7 +69,7 @@ export function InvitePartner(): ReactElement {
   return (
     <AuthLayout
       title="Invite your partner"
-      subtitle="Send an invite by email or username. Your partner joins with the code below."
+      subtitle="Send an invite by email or username. Email invites include the code automatically."
     >
       <Stack spacing={2.5}>
         <Tabs value={tab} onChange={(_event, value: "email" | "username") => setTab(value)}>
@@ -87,7 +91,7 @@ export function InvitePartner(): ReactElement {
                 label="Partner email"
                 type="email"
                 autoComplete="off"
-                helperText="They should sign up with this email to accept the invite"
+                helperText="We'll email them an invite with the join code"
               />
               <Button type="submit" variant="contained" disabled={createInvitation.isPending}>
                 Create invite

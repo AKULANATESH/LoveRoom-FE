@@ -1,4 +1,5 @@
 import { Box, Chip, Container, Fade, Stack, Typography } from "@mui/material";
+import { useAuthContext } from "@src/auth/useAuth";
 import { useToast } from "@src/lib/notifications/useToast";
 import { type ReactElement, useState } from "react";
 
@@ -17,6 +18,7 @@ import { QuickActions } from "../components/QuickActions";
 import { ConnectionAwarenessCard } from "../components/ConnectionAwarenessCard";
 import { LocationDialog } from "../components/LocationDialog";
 import { TogetherHeaderActions } from "../components/TogetherHeaderActions";
+import { SoloEmptyState } from "../components/SoloEmptyState";
 import { EmptyState, ErrorState, LoadingState } from "../components/StateViews";
 import { useRelationshipRealtime } from "../realtime/useRelationshipRealtime";
 import type { EmotionalActionType, MoodType } from "../types";
@@ -30,9 +32,10 @@ const actionSuccessCopy: Record<EmotionalActionType, string> = {
 
 export function RelationshipHome(): ReactElement {
   const toast = useToast();
+  const { hasPartner } = useAuthContext();
   const [celebrationCopy, setCelebrationCopy] = useState<string>();
   const [locationDialogOpen, setLocationDialogOpen] = useState(false);
-  const relationshipHome = useRelationshipHome();
+  const relationshipHome = useRelationshipHome({ enabled: hasPartner });
   const realtime = useRelationshipRealtime(relationshipHome.data?.relationship.id);
   const sendAction = useSendEmotionalAction({
     onSuccess: (response) => {
@@ -47,14 +50,33 @@ export function RelationshipHome(): ReactElement {
       toast.showSuccessToast("Your mood was shared with care.");
     },
   });
-  const connectionAwareness = useConnectionAwareness();
-  const partnerActivity = usePartnerActivity();
-  const calendarEvents = useCalendarEvents();
+  const connectionAwareness = useConnectionAwareness({ enabled: hasPartner });
+  const partnerActivity = usePartnerActivity({ enabled: hasPartner });
+  const calendarEvents = useCalendarEvents({ enabled: hasPartner });
   const recordTouch = useRecordHourlyTouch({
     onSuccess: () => {
       toast.showSuccessToast("Your partner will feel this hour.");
     },
   });
+
+  if (!hasPartner) {
+    return (
+      <Container maxWidth="lg" disableGutters sx={{ pb: 6 }}>
+        <Stack spacing={3}>
+          <Box>
+            <Typography variant="overline" color="text.secondary">
+              Together
+            </Typography>
+            <Typography variant="h1">Your private space for two</Typography>
+            <Typography color="text.secondary">
+              Almost there. One more heart needed.
+            </Typography>
+          </Box>
+          <SoloEmptyState page="home" />
+        </Stack>
+      </Container>
+    );
+  }
 
   if (relationshipHome.isLoading) {
     return <LoadingState />;

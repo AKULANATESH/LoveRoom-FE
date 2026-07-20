@@ -1,18 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, Button, Link, Stack } from "@mui/material";
 import { getApiErrorMessage } from "@src/api/getApiErrorMessage";
-import { useRegisterCouple } from "@src/auth/api/useRegisterCouple";
+import { useRegister } from "@src/auth/api/useRegister";
 import { useAuthContext } from "@src/auth/useAuth";
 import { TextInputField } from "@src/lib/formFields/TextInputField";
 import { useToast } from "@src/lib/notifications/useToast";
 import type { ReactElement } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Link as RouterLink, Navigate, useNavigate } from "react-router-dom";
+import { Link as RouterLink, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { AuthLayout } from "../components/AuthLayout";
 
-const registerCoupleSchema = z
+const registerSchema = z
   .object({
     name: z.string().min(2, "Enter your name"),
     email: z.string().email("Enter a valid email"),
@@ -21,103 +21,89 @@ const registerCoupleSchema = z
       .min(3, "Username must be at least 3 characters")
       .max(30)
       .regex(/^[a-zA-Z0-9_]+$/, "Use letters, numbers, and underscores only"),
-    partnerEmail: z.string().email("Enter your partner’s email"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
-  })
-  .refine((data) => data.email.toLowerCase() !== data.partnerEmail.toLowerCase(), {
-    message: "Partner email must be different from yours",
-    path: ["partnerEmail"],
   });
 
-type RegisterCoupleForm = z.infer<typeof registerCoupleSchema>;
+type RegisterForm = z.infer<typeof registerSchema>;
+
+interface RegisterLocationState {
+  inviteCode?: string;
+  inviteEmail?: string;
+}
 
 export function Register(): ReactElement {
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useToast();
-  const { isAuthenticated, hasPartner, setAuthFromResponse } = useAuthContext();
-  const form = useForm<RegisterCoupleForm>({
-    resolver: zodResolver(registerCoupleSchema),
+  const { isAuthenticated, setAuthFromResponse } = useAuthContext();
+  const locationState = (location.state as RegisterLocationState | null) ?? {};
+  const inviteEmail = locationState.inviteEmail ?? "";
+
+  const form = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
-      email: "",
+      email: inviteEmail,
       username: "",
-      partnerEmail: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  const registerCouple = useRegisterCouple({
+  const register = useRegister({
     onSuccess: (response) => {
       setAuthFromResponse(response);
-      toast.showSuccessToast(
-        "Your shared space is ready. We emailed your partner to set their username and password.",
-      );
+      toast.showSuccessToast("Welcome to Together. Explore the app and invite your partner when ready.");
       navigate("/together");
     },
     onError: (error) => {
       toast.showErrorToast(
-        getApiErrorMessage(error, "Could not create your accounts. Check details and try again."),
+        getApiErrorMessage(error, "Could not create your account. Check details and try again."),
       );
     },
   });
 
-  if (isAuthenticated && hasPartner) {
-    return <Navigate to="/together" />;
-  }
-
   if (isAuthenticated) {
-    return <Navigate to="/invite" />;
+    return <Navigate to="/together" />;
   }
 
   return (
     <AuthLayout
-      title="Create your shared space"
-      subtitle="Add both emails and one password. Your partner gets an email to choose their username and set a new password."
+      title="Create your account"
+      subtitle="Sign up solo. Invite your partner later from inside the app."
     >
       <FormProvider {...form}>
         <Stack
           component="form"
           spacing={2}
           onSubmit={form.handleSubmit((values) => {
-            registerCouple.mutate({
+            register.mutate({
               name: values.name,
               email: values.email,
               username: values.username,
-              partnerEmail: values.partnerEmail,
               password: values.password,
             });
           })}
         >
-          {registerCouple.isError ? (
+          {register.isError ? (
             <Alert severity="error">
               {getApiErrorMessage(
-                registerCouple.error,
+                register.error,
                 "Registration failed. Email or username may already exist.",
               )}
             </Alert>
           ) : null}
           <TextInputField name="name" label="Your name" autoComplete="name" />
           <TextInputField name="email" label="Your email" type="email" autoComplete="email" />
-          <TextInputField
-            name="username"
-            label="Your username"
-            helperText="Only you set a username here"
-          />
-          <TextInputField
-            name="partnerEmail"
-            label="Partner email"
-            type="email"
-            helperText="We’ll email them a link to set username and password"
-          />
+          <TextInputField name="username" label="Username" autoComplete="username" />
           <TextInputField
             name="password"
-            label="Shared password"
+            label="Password"
             type="password"
             autoComplete="new-password"
           />
@@ -127,13 +113,8 @@ export function Register(): ReactElement {
             type="password"
             autoComplete="new-password"
           />
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            disabled={registerCouple.isPending}
-          >
-            {registerCouple.isPending ? "Creating accounts..." : "Create accounts"}
+          <Button type="submit" variant="contained" size="large" disabled={register.isPending}>
+            {register.isPending ? "Creating account..." : "Create account"}
           </Button>
           <Link component={RouterLink} to="/login" underline="hover">
             Already have an account? Sign in

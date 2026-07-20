@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { io } from "socket.io-client";
 
 import { usePartnerActivity, partnerActivityQueryKey } from "../api/usePartnerActivity";
+import { soloModeCopy } from "../soloModeCopy";
 import type { EmotionalActionType, PartnerActivityItem } from "../types";
 
 const actionIcons: Record<EmotionalActionType, SvgIconComponent> = {
@@ -87,8 +88,8 @@ function PartnerActivityItemRow({ item }: { item: PartnerActivityItem }): ReactE
 }
 
 export function PartnerActivitySidebar(): ReactElement {
-  const { authState } = useAuthContext();
-  const partnerActivity = usePartnerActivity();
+  const { authState, hasPartner } = useAuthContext();
+  const partnerActivity = usePartnerActivity({ enabled: hasPartner });
 
   useEffect(() => {
     const relationshipId = authState?.relationshipId;
@@ -109,6 +110,19 @@ export function PartnerActivitySidebar(): ReactElement {
       socket.disconnect();
     };
   }, [authState?.relationshipId]);
+
+  if (!hasPartner) {
+    return (
+      <Box sx={{ px: 1, pb: 2 }}>
+        <Typography variant="overline" color="text.secondary" sx={{ px: 1 }}>
+          From your partner
+        </Typography>
+        <Typography variant="caption" color="text.secondary" sx={{ px: 1, display: "block", mt: 1 }}>
+          {soloModeCopy.home.hint}
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ px: 1, pb: 2 }}>

@@ -9,6 +9,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useAuthContext } from "@src/auth/useAuth";
 import { useToast } from "@src/lib/notifications/useToast";
 import { type ReactElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,16 +22,18 @@ import { useSendMessage } from "../api/useSendMessage";
 import { CameraCapture } from "../components/CameraCapture";
 import { ChatComposer } from "../components/ChatComposer";
 import { MessageList } from "../components/MessageList";
+import { SoloEmptyState } from "../../components/SoloEmptyState";
 import { useChatSocket } from "../realtime/useChatSocket";
 
 export function ChatPage(): ReactElement {
   const navigate = useNavigate();
   const toast = useToast();
-  const relationshipHome = useRelationshipHome();
+  const { hasPartner } = useAuthContext();
+  const relationshipHome = useRelationshipHome({ enabled: hasPartner });
   const partnerName = relationshipHome.data?.partner.name ?? "Your partner";
   const partnerAvatar = relationshipHome.data?.partner.avatarUrl;
 
-  const chatMessages = useChatMessages();
+  const chatMessages = useChatMessages({ enabled: hasPartner });
   const sendMessage = useSendMessage();
   const markRead = useMarkRead();
   const { partnerTyping, emitTyping } = useChatSocket();
@@ -69,6 +72,22 @@ export function ChatPage(): ReactElement {
       },
     );
   };
+
+  if (!hasPartner) {
+    return (
+      <Container maxWidth="md" disableGutters sx={{ pb: 6 }}>
+        <Stack spacing={3}>
+          <Box>
+            <Typography variant="overline" color="text.secondary">
+              Together
+            </Typography>
+            <Typography variant="h1">Chat</Typography>
+          </Box>
+          <SoloEmptyState page="chat" />
+        </Stack>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md" disableGutters sx={{ height: "100%" }}>

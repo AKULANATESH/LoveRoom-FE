@@ -6,24 +6,20 @@ import { Link as RouterLink, Navigate } from "react-router-dom";
 import { AuthLayout } from "../components/AuthLayout";
 
 export function Welcome(): ReactElement {
-  const { isAuthenticated, hasPartner } = useAuthContext();
-
-  if (isAuthenticated && hasPartner) {
-    return <Navigate to="/together" />;
-  }
+  const { isAuthenticated } = useAuthContext();
 
   if (isAuthenticated) {
-    return <Navigate to="/invite" />;
+    return <Navigate to="/together" />;
   }
 
   return (
     <AuthLayout
       title="Welcome to Together"
-      subtitle="Create a shared space with both emails. Your partner gets a link to set their username and password."
+      subtitle="Create your account, explore the app, and invite your partner when you're ready."
     >
       <Stack spacing={1.5}>
         <Button component={RouterLink} to="/register" variant="contained" size="large">
-          Create shared account
+          Create account
         </Button>
         <Button component={RouterLink} to="/login" variant="outlined" size="large">
           Sign in
