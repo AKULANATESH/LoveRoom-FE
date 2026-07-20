@@ -9,7 +9,7 @@ import { useToast } from "@src/lib/notifications/useToast";
 import type { ReactElement } from "react";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { Link as RouterLink, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
 import { AuthFooterLinks } from "../components/AuthFooterLinks";
@@ -30,10 +30,12 @@ interface LoginLocationState {
 export function Login(): ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const toast = useToast();
   const { isAuthenticated, setAuthFromResponse, logout } = useAuthContext();
   const locationState = (location.state as LoginLocationState | null) ?? {};
-  const inviteCode = locationState.inviteCode;
+  const inviteCode =
+    locationState.inviteCode ?? searchParams.get("code")?.toUpperCase() ?? undefined;
   const inviteEmailFromState = locationState.inviteEmail;
   const invitePreview = usePreviewInvitation(inviteCode);
   const inviteEmail = inviteEmailFromState ?? invitePreview.data?.inviteeEmail ?? "";
@@ -129,7 +131,7 @@ export function Login(): ReactElement {
           </Button>
           <Link
             component={RouterLink}
-            to="/register"
+            to={inviteCode ? `/register?code=${encodeURIComponent(inviteCode)}` : "/register"}
             state={{ inviteCode, inviteEmail }}
             underline="hover"
           >

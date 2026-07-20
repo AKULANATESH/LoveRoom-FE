@@ -69,7 +69,9 @@ export function JoinWithCode(): ReactElement {
 
   function goToRegisterWithInvite() {
     logout();
-    navigate("/register", { state: { inviteCode: codeValue, inviteEmail, inviteUsername } });
+    navigate(`/register?code=${encodeURIComponent(codeValue)}`, {
+      state: { inviteCode: codeValue, inviteEmail, inviteUsername },
+    });
   }
 
   if (isAuthenticated && hasPartner) {
