@@ -5,31 +5,30 @@ export const soloModeCopy: Record<
   { title: string; description: string; hint?: string }
 > = {
   home: {
-    title: "Room for two. Occupancy: you.",
+    title: "Room for two. Ippudu neevu matrame.",
     description:
-      "The candles are lit, the playlist is ready, and the second chair is doing interpretive dance with emptiness.",
-    hint: "Invite someone before the furniture files a complaint.",
+      "Lights on, vibe set, second chair empty — full solo scene ra, partner ledu, drama kuda ledu.",
+    hint: "Oka partner ni invite chey, lekapothe room kuda bore aipotundi babu.",
   },
   chat: {
-    title: "Echo chamber, premium edition",
+    title: "Solo chat mode — echo hi echo",
     description:
-      "Messages sent here currently bounce off the void and return as unsolicited life advice from your own brain.",
-    hint: "A partner turns this into actual conversation. Revolutionary.",
+      "Ikkada message pettina reply nee brain nunchi vastundi. Actual chat ki partner kavali ra.",
+    hint: "Partner add cheste ee echo chamber close aipotundi — simple.",
   },
   calendar: {
-    title: "Dates with destiny (TBD)",
-    description:
-      "Your shared calendar is a blank canvas. Very minimalist. Very 'we'll figure it out later.'",
-    hint: "Connect with someone to start blocking out moments worth remembering.",
+    title: "Plans? Inka pending eh",
+    description: "Shared calendar ippudu blank — chala fresh, chala 'tarvata chuddam' type.",
+    hint: "Partner connect ayyaka dates and plans proper ga set cheyochu.",
   },
   location: {
-    title: "You are here. They are… elsewhere?",
+    title: "Nuvvu ikkada. Vaadu ekkada?",
     description:
-      "Live location works best when there are two dots on the map. Right now it's a solo expedition.",
-    hint: "Invite your person to share the journey — or at least the pin.",
+      "Live location ki iddaru kavali. Ippudu map lo nee pin matrame — solo trip vibes ra.",
+    hint: "Nee person ni invite chey, location share cheyadam easy avtundi.",
   },
   menu: {
     title: "Flying solo",
-    description: "Full app access. Zero partner. Maximum cryptic energy.",
+    description: "Motham app open. Partner zero. Full masti mode babu.",
   },
 };
